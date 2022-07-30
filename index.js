@@ -3,7 +3,6 @@ const cheerio = require('cheerio');
 const async = require('async');
 const url = require('url');
 const ProgressBar = require('progress');
-
 class SiteMapCrawler {
   static start(links, isProgress, isLog, isCounting, callback) {
     const siteMap = {};
