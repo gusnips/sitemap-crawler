@@ -5,7 +5,7 @@ Generate sitemap just throw any link.
 ``sitemap-crawler`` collect directly accessible url through resolve with href value.
 ## Basic Usage
 ```js
-const siteMap = require('sitemap-crawler');
+const siteMap = require('sitemap-crawler2');
 const link = 'http://www.npmjs.com';
 
 siteMap(link, (err, res) => {
@@ -72,6 +72,7 @@ siteMap(link, {isProgress : true, isLog : true}, (err, res) => {
 
 ## Authors
 tinyjin - [Github](https:github.com/tinyjin), [Blog](https://wlsdml1103.blog.me)
+gusnips - [Github](https:github.com/gusnips)
 
 ## License
 This project has MIT License.
