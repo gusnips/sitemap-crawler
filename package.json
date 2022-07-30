@@ -1,27 +1,24 @@
 {
-  "name": "sitemap-crawler",
+  "name": "sitemap-crawler2",
   "version": "1.0.0",
   "description": "Generate sitemap just throw any link.",
   "main": "index.js",
-  "scripts": {
-    "test": "node index.test.js"
-  },
   "keywords": [
     "sitemap",
     "crawler",
     "href"
   ],
   "author": {
-    "name": "tinyjin",
-    "email": "baram991103@gmail.com",
-    "url": "https://wlsdml1103.blog.me"
+    "name": "gusnips",
+    "email": "gustavonips@gmail.com",
+    "url": "https://github.com/gusnips"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tinyjin/sitemap-crawler.git"
+    "url": "git://github.com/gusnips/sitemap-crawler.git"
   },
   "license": "MIT",
-  "homepage": "https://github.com/tinyjin/sitemap-crawler",
+  "homepage": "https://github.com/gusnips/sitemap-crawler",
   "dependencies": {
     "async": "^2.6.1",
     "cheerio": "^1.0.0-rc.2",
