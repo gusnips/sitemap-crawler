@@ -4,62 +4,64 @@ const async = require('async');
 const url = require('url');
 const ProgressBar = require('progress');
 class SiteMapCrawler {
-  static start(links, isProgress, isLog, isCounting, callback) {
-    const siteMap = {};
-    let bar;
+  static start(links, isProgress, isLog, isCounting) {
+    return new Promise((resolve, reject)=>{
+      const siteMap = {};
+      let bar;
 
-    if (isProgress)  {
-      bar = new ProgressBar('siteMap-crawling [:bar] :percent', {total: links.length});
-    }
-
-    async.each(links, (link, callback) => {
-
-      const done = () => {
-        if (isProgress) {
-          bar.tick();
-        }
-
-        callback();
+      if (isProgress)  {
+        bar = new ProgressBar('siteMap-crawling [:bar] :percent', {total: links.length});
       }
-    
-      request(link, (err, res, body) => {
-        if (err) {
-          if (isLog) {
-            const {errno, code, syscall, host} = err;
-            console.log(`\nError: ${errno} ${code} ${syscall}, ${host}`);
+
+      async.each(links, (link, callback) => {
+
+        const done = () => {
+          if (isProgress) {
+            bar.tick();
+          }
+
+          callback();
+        }
+      
+        request(link, (err, res, body) => {
+          if (err) {
+            if (isLog) {
+              const {errno, code, syscall, host} = err;
+              console.log(`\nError: ${errno} ${code} ${syscall}, ${host}`);
+            }
+            return done();
+          }
+
+          const $ = cheerio.load(body);
+          const hrefs = $('[href]');
+          let filteredLinks = new Set();
+
+          hrefs.each((i) => {
+            const href = this.filterLink(link, hrefs.eq(i).attr('href'));
+
+            if (href) {
+              filteredLinks.add(href);
+            }
+          });
+
+          filteredLinks = [...filteredLinks];
+
+          if (filteredLinks.length > 0) {
+            siteMap[link] = filteredLinks;
           }
           return done();
-        }
-
-        const $ = cheerio.load(body);
-        const hrefs = $('[href]');
-        let filteredLinks = new Set();
-
-        hrefs.each((i) => {
-          const href = this.filterLink(link, hrefs.eq(i).attr('href'));
-
-          if (href) {
-            filteredLinks.add(href);
-          }
         });
-
-        filteredLinks = [...filteredLinks];
-
-        if (filteredLinks.length > 0) {
-          siteMap[link] = filteredLinks;
+      }, (err) => {
+        if (err) {
+          return reject(err);
         }
-        return done();
+
+        const count = Object.keys(siteMap).length;
+        const siteMapObj = isCounting ? {count, siteMap} : siteMap[links];
+
+        resolve(null, siteMapObj);
       });
-    }, (err) => {
-      if (err) {
-        return callback(err);
-      }
-
-      const count = Object.keys(siteMap).length;
-      const siteMapObj = isCounting ? {count, siteMap} : siteMap[links];
-
-      callback(null, siteMapObj);
-    });
+    })
   }
 
   static filterLink(parent, href) {
@@ -128,7 +130,7 @@ const siteMap = (link, opts, callback) => {
     });
   }
 
-  SiteMapCrawler.start(link, isProgress, isLog, isCounting, callback);
+  return SiteMapCrawler.start(link, isProgress, isLog, isCounting, callback);
 }
 
 module.exports = siteMap;
